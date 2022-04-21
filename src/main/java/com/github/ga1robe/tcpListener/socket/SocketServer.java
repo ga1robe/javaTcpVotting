@@ -55,8 +55,8 @@ public class SocketServer implements Runnable {
          */
         ArrayList<ServerThread> serverThreadList = new ArrayList<>();
         try (ServerSocket serversocket = this.serverSocket) {
+            if (serversocket == null) throw new RuntimeException("Could not open socket");
             while (true) {
-                if (serversocket == null) throw new RuntimeException("Could not open socket");
                 Socket socket = serversocket.accept();
                 //ServerThread serverThread = new ServerThread(socket, serverThreadList);
                 ServerThread serverThread = getServerThread(socket, serverThreadList);
@@ -67,6 +67,8 @@ public class SocketServer implements Runnable {
             }
         } catch (Exception e) {
             logger.warn("Error occured in SocketServer.run: " + e.getStackTrace());
+            System.err.println("Cannot start application. " + e.getMessage());
+            System.exit(1);
         }
     }
 
