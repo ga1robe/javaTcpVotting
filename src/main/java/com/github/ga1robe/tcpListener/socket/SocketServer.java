@@ -36,6 +36,8 @@ public class SocketServer implements Runnable {
             logger.info("SocketServer Listening on port:" + port);
         } catch (IOException e) {
             logger.warn("WARNING." + "May be port " + port + " is already in use.");
+            /* server socket not installed */
+            this.serverSocket = null;
         }
     }
 
@@ -54,6 +56,7 @@ public class SocketServer implements Runnable {
         ArrayList<ServerThread> serverThreadList = new ArrayList<>();
         try (ServerSocket serversocket = this.serverSocket) {
             while (true) {
+                if (serversocket == null) throw new RuntimeException("Could not open socket");
                 Socket socket = serversocket.accept();
                 //ServerThread serverThread = new ServerThread(socket, serverThreadList);
                 ServerThread serverThread = getServerThread(socket, serverThreadList);
